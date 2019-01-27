@@ -1,0 +1,44 @@
+.gallery {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.gallery .gallery-content {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.gallery .gallery-content .gallery-grid {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (minmax(200px, 1fr))[auto-fill];
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 20px;
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+}
+
+.gallery .gallery-content .gallery-grid .gallery-item img {
+  border: 1px solid #ccc;
+  -webkit-box-shadow: 2px 2px 6px 0px rgba(0, 0, 0, 0.3);
+          box-shadow: 2px 2px 6px 0px rgba(0, 0, 0, 0.3);
+  max-width: 100%;
+}
+
+.gallery .gallery-content .gallery-grid .gallery-item p {
+  display: block;
+  font-size: 14px;
+  text-align: left;
+  margin: 0px;
+  color: #000000;
+  font-family: "Lato Semibold";
+  cursor: pointer;
+}
+
+.gallery .gallery-content .gallery-grid .gallery-item .edit-name {
+  display: none;
+}
+/*# sourceMappingURL=gallery.css.map */
