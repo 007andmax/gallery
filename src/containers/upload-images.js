@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ImageUploader from 'react-images-upload';
+import ImageUploader from "react-images-upload";
 import { connect } from "react-redux";
 import {AddImages} from "../actions/gallery";
 import "../assets/css/upload-images.css";
@@ -18,9 +18,9 @@ class UploadImages extends Component {
       <div className="upload-images">
          <ImageUploader
                 	withIcon={true}
-                	buttonText='Choose images'
+                	buttonText="Choose images"
                 	onChange={this.onDrop}
-                	imgExtension={['.jpg', '.gif', '.png', '.gif']}
+                	imgExtension={[".jpg", ".gif", ".png", ".gif"]}
                 	maxFileSize={5242880}
             />
 
