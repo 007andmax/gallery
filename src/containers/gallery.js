@@ -2,9 +2,14 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import ReactDOM from "react-dom";
 import { ADD_IMAGES } from "../constants/gallery";
+import { SEARCH_NAME, CLEAR_SEARCH } from "../constants/search";
+import { setCountSearchItem } from "../actions/search";
 import "../assets/css/gallery.css";
 
 class Gallery extends Component {
+  full_list;
+  initSearch = false;
+  nameForSearch = "";
   constructor(props) {
     super(props);
     this.state = {
@@ -14,7 +19,7 @@ class Gallery extends Component {
     this.onKeyUpEditName = this.onKeyUpEditName.bind(this);
   }
   onKeyUpEditName(e) {
-    if (e.keyCode === 13) {
+    if (e.keyCode === 13 && e.target.value !== "") {
       let index = Number(e.target.parentNode.getAttribute("index"));
       let list = this.state.list;
       list[index].name = e.target.value;
@@ -40,19 +45,43 @@ class Gallery extends Component {
     item.parentNode.querySelector("p").style.display = "none";
     item.value = this.state.list[index].name;
   }
+  addItems(images) {
+    return this.state.list.concat(
+      images.map(item => {
+        return {
+          images: URL.createObjectURL(item),
+          name: item.name.substring(0, item.name.lastIndexOf("."))
+        };
+      })
+    );
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.gallery.action && nextProps.gallery.action === ADD_IMAGES) {
-      this.setState({
-        list: this.state.list.concat(
-          nextProps.gallery.images.map(item => {
-            return {
-              images: URL.createObjectURL(item),
-              name: item.name.substring(0, item.name.lastIndexOf("."))
-            };
-          })
-        )
-      });
+      this.full_list = this.addItems(nextProps.gallery.images);
+      if (this.initSearch) {
+        this.onInitSearch();
+      } else {
+        this.setState({
+          list: this.addItems(nextProps.gallery.images)
+        });
+      }
     }
+    if (nextProps.search.action && nextProps.search.action === SEARCH_NAME) {
+      this.nameForSearch = nextProps.search.name;
+      this.onInitSearch();
+    }
+    if (nextProps.search.action && nextProps.search.action === CLEAR_SEARCH) {
+      this.initSearch = false;
+      this.setState({ list: this.full_list });
+    }
+  }
+  onInitSearch() {
+    let result = this.full_list.filter(item =>
+      item.name.includes(this.nameForSearch)
+    );
+    this.setState({ list: result });
+    this.props.setCountSearchItem(result.length);
+    this.initSearch = true;
   }
   render() {
     return (
@@ -80,7 +109,16 @@ class Gallery extends Component {
 }
 
 let mapStateToProps = state => {
-  return { gallery: state.galleryState };
+  return { gallery: state.galleryState, search: state.searchState };
 };
-
-export default connect(mapStateToProps)(Gallery);
+let mapDispatchToProps = dispatch => {
+  return {
+    setCountSearchItem: count => {
+      dispatch(setCountSearchItem(count));
+    }
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Gallery);
